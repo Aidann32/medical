@@ -13,14 +13,21 @@
 
     <!-- Custom styles -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Home page</title>
+    {% block extra_css %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     {% include 'partials/_header.html' %}
 
+    {% block content %}
+    {% endblock %}
+    
     {% include 'partials/_footer.html' %}
 
 
+    {% block extra_js %}
+    {% endblock %}
     <script type='text/javascript' src="{% static 'js/custom.js' %}"></script>
 
     <script type='text/javascript' src='{% static 'assets/js/jquery.js' %}'></script>
