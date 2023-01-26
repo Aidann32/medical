@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}   
+
+{% block title %}Создание пациента{% endblock %}
+
+{% block content %}
+<div class="container m-100">
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO and message.message == 'Patient created' %}
+                <div class="container">
+                    <div class="alert alert-success" role="alert">
+                        Пользователь успешно создан
+                    </div>
+                </div>
+            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR and message.message == 'Patient not created' %}
+                <div class="container">
+                    <div class="alert alert-error" role="alert">
+                       Неправильно введен ИИН или номер телефона
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+<form method="POST">
+    {% csrf_token %}
+    {{ patient_form|crispy }}
+
+    <button class="btn btn-success" type="submit">Создать пациента</button>
+</form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/imask"></script>
+<script src="{% static 'js/phone_mask.js' %}"></script>
+{% endblock %}

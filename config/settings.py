@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'apps.landing',
     'apps.profiles',
+    'apps.office',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

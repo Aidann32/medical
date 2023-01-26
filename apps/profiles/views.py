@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+
 from .forms import CustomAuthenticationForm
 
 
@@ -14,7 +15,7 @@ def login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
+                messages.info(request, "Success login")
                 return redirect("home")
             else:
                 messages.error(request,"Invalid username or password.")
