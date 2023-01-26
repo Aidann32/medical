@@ -1563,3 +1563,14 @@ ul.tabs-nav .tab-nav.active {
 .foot-links ul li a {
     color: #828282;
 }
+
+/* Custom styles */
+ .login-form{
+    margin-top: 100px;
+    /* margin-left: 25% !important;
+    margin-right: 25% !important; */
+ }
+ 
+ .alert-container{
+    margin-top: 50px !important;
+ }

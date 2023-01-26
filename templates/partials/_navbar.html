@@ -1,0 +1,51 @@
+{% load static %}
+
+<div class="nav-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 d-flex flex-wrap justify-content-between align-items-center">
+                <div class="site-branding d-flex align-items-center">
+                   <a class="d-block" href="#" rel="home"><img class="d-block" src="{% static 'assets/img/logo.png' %}" alt="logo"></a>
+                   {% if messages %}
+                        {% for message in messages %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                                <div class="container alert-container">
+                                    <div class="alert alert-success" role="alert">
+                                        Вы успешно вошли в аккаунт
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div><!-- .site-branding -->
+
+                <nav class="site-navigation d-flex justify-content-end align-items-center">
+                    <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
+                        <li {% if request.resolver_match.url_name == 'home' %}class="current-menu-item"{% endif %}>
+                            <a href="{% url 'home' %}">Домой</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li {% if request.resolver_match.url_name == '' %}class="current-menu-item"{% endif %}>
+                                <a href="{% url 'home' %}">Кабинет</a>
+                            </li>
+                            <li {% if request.resolver_match.url_name == '' %}class="current-menu-item"{% endif %}>
+                                <a href="{% url 'logout' %}">Выйти</a>
+                            </li>
+                        {% else %}
+                            <li {% if request.resolver_match.url_name == 'login' %}class="current-menu-item"{% endif %}>
+                                <a href="{% url 'login' %}">Войти</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav><!-- .site-navigation -->
+
+                <div class="hamburger-menu d-lg-none">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div><!-- .hamburger-menu -->
+            </div><!-- .col -->
+        </div><!-- .row -->
+    </div><!-- .container -->
+</div><!-- .nav-bar -->

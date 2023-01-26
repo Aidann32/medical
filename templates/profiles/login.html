@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}    
+
+{% block title %}Войти{% endblock title %}
+
+{% block content %}
+<div class="login-form">
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ login_form|crispy }}
+            <button class="btn btn-primary" type="submit">Войти</button>
+        </form>
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="container alert-container">
+                <div class="alert alert-danger" role="alert">
+                    Неправильный логин или пароль!
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
