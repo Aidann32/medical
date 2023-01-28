@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}  
+
+{% block title %}Изменение данных пациента{% endblock %}
+
+{% block content %}
+<div class="m-100 container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'office_menu' %}">Кабинет</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'patients_list' %}">Список пациентов</a></li>
+          <li class="breadcrumb-item active">{{ patient.first_name}} {{ patient.last_name }}</li>
+        </ol>
+    </nav>
+    {% if messages %}
+    {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO and message.message == 'Patient edited' %}
+            <div class="container">
+                <div class="alert alert-success" role="alert">
+                    Данные пользователя успешно сохранены
+                </div>
+            </div>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR and message.message == 'Edition error' %}
+            <div class="container">
+                <div class="alert alert-error" role="alert">
+                    Данные пользователя не изменены
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+    <div class="row">
+        <div class="col-sm-6">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button class="btn btn-success" type="submit">Изменить данные</button>
+            </form>
+        </div>
+        <div class="col-sm-6">
+            <h5>Список диагнозов</h5>
+            <ul class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+              </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/imask"></script>
+<script src="{% static 'js/phone_mask.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function(event) { 
+    let time_input = document.querySelector('#id_birth_date')
+
+    let birth_date = "{{birth_date}}"
+    let year = birth_date.split('.')[2]
+    let month = birth_date.split('.')[1]
+    let day = birth_date.split('.')[0]
+
+    let new_value = `${year}-${month}-${day}`
+    time_input.setAttribute('value', new_value)
+
+    let time_input_div = document.querySelector('#div_id_birth_date')
+
+    time_input_div.innerHTML += `<p><b>Текущая дата рождения: {{birth_date}}</b></p>`
+});
+    
+</script>
+{% endblock %}

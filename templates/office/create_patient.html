@@ -7,6 +7,13 @@
 
 {% block content %}
 <div class="container m-100">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'office_menu' %}">Кабинет</a></li>
+          <li class="breadcrumb-item active">Создание пациента</li>
+        </ol>
+    </nav>
     {% if messages %}
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO and message.message == 'Patient created' %}
@@ -36,4 +43,11 @@
 {% block extra_js %}
 <script src="https://unpkg.com/imask"></script>
 <script src="{% static 'js/phone_mask.js' %}"></script>
+<script>
+    $(function () {
+      $("#datetimepicker1").datetimepicker({
+        format: 'DD/MM/YYYY HH:mm',
+      });
+    });
+</script>
 {% endblock %}

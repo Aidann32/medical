@@ -1505,7 +1505,7 @@ ul.tabs-nav .tab-nav.active {
 .site-footer {
     position: relative;
     padding: 48px 0;
-    background: url("images/footer-bg.png") no-repeat center #fff;
+    background: url("../assets/img/footer-bg.png") no-repeat center #fff;
     background-size: cover;
     font-size: 14px;
     color: #828282;
@@ -1580,5 +1580,8 @@ ul.tabs-nav .tab-nav.active {
  }
 
  .m-100{
-    margin-top: 100px;
+    margin-top: 150px;
  }
+ a:visited { 
+    text-decoration: none; 
+}

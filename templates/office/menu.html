@@ -3,7 +3,13 @@
 {% block title %}Меню кабинета{% endblock %}
 
 {% block content %}
-<div class="container office-menu">
+<div class="container office-menu mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item active">Кабинет</li>
+        </ol>
+    </nav>
     <div class="row">
         <div class="col-sm text-center">
             <a href="{% url 'create_patient' %}">
@@ -12,7 +18,7 @@
             </a>
         </div>
         <div class="col-sm text-center">
-            <a href="#">
+            <a href="{% url 'patients_list' %}">
                 <i class="fa fa-list fa-5x" aria-hidden="true"></i>
                 <p>Список пациентов</p>
             </a>

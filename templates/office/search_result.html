@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block content %}
+<div class="m-100 container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'office_menu' %}">Кабинет</a></li>
+          <li class="breadcrumb-item active">Поиск пациента</li>
+        </ol>
+    </nav>
+    <form method="GET">
+        <div class="row">
+          <div class="col">
+            <label for="search_field"><b>Поиск пациента</b></label>
+            <input type="text" class="form-control" id="search_field" placeholder="Введите имя" required name="patient_name">
+            <button class="btn btn-outline-secondary mt-2" type="submit">Искать</button>
+          </div>
+          <div class="col">
+            <a class="btn btn-outline-secondary mt-2" href="{% url 'patients_list' %}">К списку всех пациентов</a>
+          </div>
+        </div>
+    </form>
+    <div class="row">
+      {% if patients %}
+        {% for patient in patients %}
+        <div class="col-sm-6 mb-3 mt-3">
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">{{patient.first_name}} {{ patient.last_name }}</h5>
+                <p class="card-text">
+                    <b>ИИН:</b> {{patient.iin}}<br/>
+                    <b>Номер телефона:</b> {{patient.phone_number}}<br/>
+                    <b>Email:</b> {{patient.email}}
+                </p>
+                <a href="#" class="btn btn-primary">Просмотр</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-sm-12 text-center mt-5 mb-5">
+          <h2>По вашему запросу ничего не найдено</h2>
+        </div>
+      {% endif %}
+    </div>
+</div>
+{% endblock %}
