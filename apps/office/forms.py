@@ -21,12 +21,18 @@ class PatientModelForm(ModelForm):
 
         iin = cd.get('iin')
         birth_date = cd.get('birth_date')
+        phone_number = cd.get('phone_number')
 
+        if Patient.objects.filter(iin=iin).exists():
+            raise ValidationError("Пользователь с таким ИИН уже существует")
+
+        if Patient.objects.filter(phone_number=phone_number).exists():
+            raise ValidationError('Пользователь с таким номером телефона уже существует')
+            
         if not iin.isnumeric():
             raise ValidationError("ИИН должен содержать только цифры")   
 
         if not(iin_to_datetime(iin) == birth_date):
-
             raise ValidationError("ИИН и дата рождения должны совпадать")
 
         return cd
