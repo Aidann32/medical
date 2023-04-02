@@ -43,7 +43,7 @@ class Diagnosis(models.Model):
 
 
 class XRay(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Аккаунт пациента')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Пациент')
     photo = models.ImageField(upload_to='xrays/', verbose_name='Рентгеновский снимок')
     result = models.CharField(max_length=1024, null=True, blank=True, verbose_name='Результат')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
@@ -51,6 +51,14 @@ class XRay(models.Model):
 
     def __str__(self):
         return f'{self.patient}: {self.created_at}'
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # If instance is newly created
+            # TODO: Check in ML backend and save to self.result
+            self.result = "Test result"
+
+        super(XRay, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Снимок пациента'

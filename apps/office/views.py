@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
@@ -7,14 +7,14 @@ from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import PatientModelForm, XRayModelForm
-from .models import Patient
-from .decorators import doctor_required, client_required
+from .models import Patient, XRay
+from .decorators import doctor_required, client_required, confirmed_client_required
 
 
 @login_required(login_url='/profiles/login/')
 @doctor_required
 def office_menu(request):
-    return render(request, 'office/menu.html')
+    return render(request, 'office/doctor/menu.html')
 
 
 @login_required(login_url='/profiles/login/')
@@ -29,7 +29,7 @@ def create_patient(request):
         else:
             messages.error(request, 'Patient not created')
 
-    return render(request, 'office/create_patient.html', {'patient_form': form})
+    return render(request, 'office/doctor/create_patient.html', {'patient_form': form})
 
 
 @login_required(login_url='/profiles/login/')
@@ -53,7 +53,7 @@ def patients_list(request):
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)
 
-        return render(request, 'office/search_result.html',{'page_obj': page_obj})
+        return render(request, 'office/doctor/search_result.html',{'page_obj': page_obj})
 
     patients = Patient.objects.all()
     paginator = Paginator(patients, 1)
@@ -86,28 +86,44 @@ def patient_details(request, iin):
     else:
         form = PatientModelForm(instance=patient)
     
-    return render(request, 'office/patient_details.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
+    return render(request, 'office/doctor/patient_details.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
 
 
 # Client side
 @login_required(login_url='profiles/login')
 @client_required
 def client_office(request):
-    return render(request, 'office/client_office.html')
+    return render(request, 'office/client/menu.html')
 
 
 @login_required(login_url='profiles/login')
 @client_required
 def client_xray(request):
     if request.method == 'POST':
-        form = XRayModelForm(request.POST)
+        form = XRayModelForm(files=request.FILES)
+        print(form.is_valid())
         if form.is_valid():
-            form.save()
+            if Patient.objects.filter(profile=request.user).exists():
+                patient = Patient.objects.filter(profile=request.user).first()
+                xray = form.save(commit=False)
+                xray.patient = patient
+                xray.save()
+                return redirect('xray_result', xray_pk=xray.pk)
+
+            return Http404()
     else:
         form = XRayModelForm()
 
-    return render(request, 'office/client_xray.html', {'form': form})
+    return render(request, 'office/client/xray.html', {'form': form})
 
+
+@login_required(login_url='profiles/login')
+@client_required
+def xray_result(request, xray_pk):
+    if XRay.objects.filter(pk=xray_pk).exists():
+        xray = XRay.objects.filter(pk=xray_pk).first()
+        return render(request, 'office/client/xray_result.html', {'xray': xray})
+    return Http404()
 
 @login_required(login_url='profiles/login')
 @client_required
@@ -131,6 +147,6 @@ def client_edit_data(request):
     else:
         form = form = PatientModelForm(instance=patient)
     
-    return render(request, 'office/client_edit_data.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
+    return render(request, 'office/client/edit_data.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
 
 

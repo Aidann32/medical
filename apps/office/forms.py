@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, DateTimeInput
+from django.forms import ModelForm, TextInput, DateTimeInput, HiddenInput
 from django.core.exceptions import ValidationError
 
 from .models import Patient, XRay
@@ -41,4 +41,4 @@ class PatientModelForm(ModelForm):
 class XRayModelForm(ModelForm):
     class Meta:
         model = XRay
-        fields = ('photo', )
+        fields = ('photo',)
