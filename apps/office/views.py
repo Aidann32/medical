@@ -125,6 +125,19 @@ def xray_result(request, xray_pk):
         return render(request, 'office/client/xray_result.html', {'xray': xray})
     return Http404()
 
+
+@login_required(login_url='profiles/login')
+@client_required
+def xray_history(request):
+    if Patient.objects.filter(profile=request.user).exists():
+        patient = Patient.objects.filter(profile=request.user).first()
+        if XRay.objects.filter(patient=patient).exists():
+            xrays = XRay.objects.filter(patient=patient).order_by('-created_at')
+            return render(request, 'office/client/xray_history.html', {'xrays': xrays }) 
+    
+    return Http404()
+
+
 @login_required(login_url='profiles/login')
 @client_required
 def client_edit_data(request):

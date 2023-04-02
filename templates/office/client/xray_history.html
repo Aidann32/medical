@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Проверка снимка{% endblock %}
+
+{% block content %}
+<div class="container office-menu mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'client_office' %}">Кабинет</a></li>
+          <li class="breadcrumb-item active">История снимков</li>
+        </ol>
+    </nav>
+    <div class="row text-center">
+    {% for xray in xrays %}
+      <div class="col-sm-4 mb-5 text-center">
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="{{ xray.photo.url }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{ xray.patient}}: {{ xray.result }}</h5>
+                <a href="{% url 'xray_result' xray.pk %}" class="btn btn-primary">Просмотреть</a>
+            </div>
+        </div>    
+      </div>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
