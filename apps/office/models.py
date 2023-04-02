@@ -9,7 +9,7 @@ class Patient(models.Model):
         ('Female', 'Женский')
     )
 
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Аккаунт')
     first_name = models.CharField(max_length=255, blank=False, null=True, verbose_name='Имя')
     last_name = models.CharField(max_length=255, blank=False, null=True, verbose_name='Фамилия')
     iin = models.CharField(max_length=12, blank=False, null=True, verbose_name='ИИН', unique=True)
@@ -43,9 +43,9 @@ class Diagnosis(models.Model):
 
 
 class XRay(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Аккаунт пациента')
     photo = models.ImageField(upload_to='xrays/', verbose_name='Рентгеновский снимок')
-    result = models.CharField(max_length=1024, null=True, blank=True)
+    result = models.CharField(max_length=1024, null=True, blank=True, verbose_name='Результат')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
@@ -58,9 +58,11 @@ class XRay(models.Model):
 
 
 class XRayRequest(models.Model):
-    x_ray = models.ForeignKey(XRay, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-    diagnosis = models.ForeignKey(Diagnosis, on_delete=models.CASCADE, null=True, blank=True)
+    x_ray = models.ForeignKey(XRay, on_delete=models.CASCADE, verbose_name='Рентгеновский снимок')
+    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Доктор')
+    diagnosis = models.ForeignKey(Diagnosis, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Диагноз')
+    doctor_comment = models.TextField(verbose_name='Комментарий доктора', null=True, blank=True)
+    is_answered = models.BooleanField(default=False, verbose_name='Отвечен ли доктором')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
