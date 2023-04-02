@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Проверка снимка{% endblock %}
+
+{% block content %}
+<div class="container office-menu mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item active">Кабинет</li>
+        </ol>
+    </nav>
+    <div class="row">
+      <div class="col-sm">
+        <h4>Загрузите свой рентгеновский снимок и проверьте возможный диагноз</h4>
+        <form method="POST">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button class="btn btn-success" type="submit">Загрузить фотографию</button>
+        </form>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

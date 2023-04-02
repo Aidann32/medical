@@ -1582,6 +1582,10 @@ ul.tabs-nav .tab-nav.active {
  .m-100{
     margin-top: 150px;
  }
- a:visited { 
-    text-decoration: none; 
-}
+ a.menu_btn, a.menu_btn:visited{
+    color: black;
+ }
+
+ a.patient-view-btn, a.patient-view-btn:visited{
+    color: white;
+ }

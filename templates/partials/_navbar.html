@@ -8,10 +8,10 @@
                    <a class="d-block" href="{% url 'home' %}" rel="home"><img class="d-block" src="{% static 'assets/img/logo.png' %}" alt="logo"></a>
                    {% if messages %}
                         {% for message in messages %}
-                            {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO and message.message == 'Success login'%}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                                 <div class="container alert-container">
                                     <div class="alert alert-success" role="alert">
-                                        Вы успешно вошли в аккаунт
+                                        {{ message }}
                                     </div>
                                 </div>
                             {% endif %}
@@ -25,15 +25,24 @@
                             <a href="{% url 'home' %}">Домой</a>
                         </li>
                         {% if user.is_authenticated %}
+                            {% if user.role == 1 %}
                             <li {% if request.resolver_match.url_name == 'office_menu' %}class="current-menu-item"{% endif %}>
                                 <a href="{% url 'office_menu' %}">Кабинет</a>
                             </li>
+                            {% else %}
+                            <li {% if request.resolver_match.url_name == 'office_menu' %}class="current-menu-item"{% endif %}>
+                                <a href="{% url 'client_office' %}">Кабинет</a>
+                            </li>
+                            {% endif %}
                             <li>
                                 <a href="{% url 'logout' %}">Выйти</a>
                             </li>
                         {% else %}
                             <li {% if request.resolver_match.url_name == 'login' %}class="current-menu-item"{% endif %}>
                                 <a href="{% url 'login' %}">Войти</a>
+                            </li>
+                            <li {% if request.resolver_match.url_name == 'register' %}class="current-menu-item"{% endif %}>
+                                <a href="{% url 'register' %}">Зарегистрироваться</a>
                             </li>
                         {% endif %}
                     </ul>

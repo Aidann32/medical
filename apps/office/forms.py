@@ -1,7 +1,7 @@
 from django.forms import ModelForm, TextInput, DateTimeInput
 from django.core.exceptions import ValidationError
 
-from .models import Patient
+from .models import Patient, XRay
 from .tools import iin_to_datetime
 from .widgets import DatePickerInput
 
@@ -23,12 +23,12 @@ class PatientModelForm(ModelForm):
         birth_date = cd.get('birth_date')
         phone_number = cd.get('phone_number')
 
-        if Patient.objects.filter(iin=iin).exists():
-            raise ValidationError("Пользователь с таким ИИН уже существует")
+        # if Patient.objects.filter(iin=iin).exists():
+        #     raise ValidationError("Пациент с таким ИИН уже существует")
 
-        if Patient.objects.filter(phone_number=phone_number).exists():
-            raise ValidationError('Пользователь с таким номером телефона уже существует')
-            
+        # if Patient.objects.filter(phone_number=phone_number).exists():
+        #     raise ValidationError('Пациент с таким номером телефона уже существует')
+
         if not iin.isnumeric():
             raise ValidationError("ИИН должен содержать только цифры")   
 
@@ -36,3 +36,9 @@ class PatientModelForm(ModelForm):
             raise ValidationError("ИИН и дата рождения должны совпадать")
 
         return cd
+
+
+class XRayModelForm(ModelForm):
+    class Meta:
+        model = XRay
+        fields = ('photo', )

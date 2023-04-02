@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Меню кабинета{% endblock %}
+
+{% block content %}
+<div class="container office-menu mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item active">Кабинет</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-sm text-center">
+            <a href="{% url 'client_xray' %}" class="menu_btn">
+                <i class="fa fa-stethoscope fa-5x" aria-hidden="true"></i>
+                <p>Проверить рентгеновский снимок</p>
+            </a>
+        </div>
+        <div class="col-sm text-center">
+            <a href="{% url 'client_edit_data' %}" class="menu_btn">
+                <i class="fa fa-pencil-square-o fa-5x" aria-hidden="true"></i>
+                <p>Редактировать свои данные</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

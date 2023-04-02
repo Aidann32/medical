@@ -3,16 +3,15 @@
 {% load static %}
 {% load crispy_forms_tags %}  
 
-{% block title %}Изменение данных пациента{% endblock %}
+{% block title %}Изменение своих данных{% endblock %}
 
 {% block content %}
 <div class="m-100 container">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'office_menu' %}">Кабинет</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'patients_list' %}">Список пациентов</a></li>
-          <li class="breadcrumb-item active">{{ patient.first_name}} {{ patient.last_name }}</li>
+          <li class="breadcrumb-item"><a href="{% url 'client_office' %}">Кабинет</a></li>
+          <li class="breadcrumb-item"><a href="#">Изменение своих данных</a></li>
         </ol>
     </nav>
     {% if messages %}
@@ -33,23 +32,14 @@
     {% endfor %}
 {% endif %}
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm">
             <h5>Звездочкой (*) отмечены обязательные для заполнения поля</h5>
             <form method="POST">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button class="btn btn-success" type="submit">Изменить данные</button>
+                <button class="btn btn-success" type="submit">Изменить данные</but
+                    ton>
             </form>
-        </div>
-        <div class="col-sm-6">
-            <h5>Список диагнозов</h5>
-            <ul class="list-group">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Morbi leo risus</li>
-                <li class="list-group-item">Porta ac consectetur ac</li>
-                <li class="list-group-item">Vestibulum at eros</li>
-              </ul>
         </div>
     </div>
 </div>

@@ -2,15 +2,15 @@
 
 {% load crispy_forms_tags %}    
 
-{% block title %}Войти{% endblock title %}
+{% block title %}Зарегистрироваться{% endblock title %}
 
 {% block content %}
 <div class="login-form">
     <div class="container">
         <form method="POST">
             {% csrf_token %}
-            {{ login_form|crispy }}
-            <button class="btn btn-primary" type="submit">Войти</button>
+            {{ register_form|crispy }}
+            <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
         </form>
     </div>
 </div>
@@ -22,8 +22,8 @@
                 <div class="alert alert-danger" role="alert">
                     {{ message }}
                 </div>
-            </div>    
-        {% endif %}   
+            </div>
+        {% endif %}
     {% endfor %}
 {% endif %}
 

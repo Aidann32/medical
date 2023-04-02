@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.profiles.models import Profile
+from .exceptions import ProfileNotDoctorException
 
 class Patient(models.Model):
     GENDERS = (
@@ -7,9 +9,10 @@ class Patient(models.Model):
         ('Female', 'Женский')
     )
 
-    first_name = models.CharField(max_length=255, blank=False, null=False, verbose_name='Имя')
-    last_name = models.CharField(max_length=255, blank=False, null=False, verbose_name='Фамилия')
-    iin = models.CharField(max_length=12, blank=False, null=False, verbose_name='ИИН', unique=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255, blank=False, null=True, verbose_name='Имя')
+    last_name = models.CharField(max_length=255, blank=False, null=True, verbose_name='Фамилия')
+    iin = models.CharField(max_length=12, blank=False, null=True, verbose_name='ИИН', unique=True)
     email = models.EmailField(null=True, blank=True)
     phone_number = models.CharField(max_length=16, verbose_name='Номер телефона', blank=True, null=True, unique=True)
     gender = models.CharField(null=True, blank=False, verbose_name='Пол', choices=GENDERS, max_length=12)
@@ -37,3 +40,39 @@ class Diagnosis(models.Model):
     class Meta:
         verbose_name = 'Диагноз'
         verbose_name_plural = 'Диагнозы'
+
+
+class XRay(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='xrays/', verbose_name='Рентгеновский снимок')
+    result = models.CharField(max_length=1024, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f'{self.patient}: {self.created_at}'
+
+    class Meta:
+        verbose_name = 'Снимок пациента'
+        verbose_name_plural = 'Снимки пациентов'
+
+
+class XRayRequest(models.Model):
+    x_ray = models.ForeignKey(XRay, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    diagnosis = models.ForeignKey(Diagnosis, on_delete=models.CASCADE, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f'{self.x_ray}: {self.doctor}'
+
+    def save(self, *args, **kwargs):
+        if doctor.role != 1:
+            raise ProfileNotDoctorException()
+        
+        super(XRayRequest, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'Заявка на рассмотрение доктора'
+        verbose_name_plural = 'Заявки на рассмотрение доктора'

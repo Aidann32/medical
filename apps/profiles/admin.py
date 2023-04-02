@@ -11,6 +11,6 @@ class ProfileAdmin(admin.ModelAdmin):
         if obj.role == 1:
             return 'Доктор'
         elif obj.role == 2:
-            return 'Мед. сестра'
+            return 'Клиент'
     
     get_role.short_description = 'Роль'

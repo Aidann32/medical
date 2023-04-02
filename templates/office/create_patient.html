@@ -31,6 +31,7 @@
             {% endif %}
         {% endfor %}
     {% endif %}
+<h5>Звездочкой (*) отмечены обязательные для заполнения поля</h5>
 <form method="POST">
     {% csrf_token %}
     {{ patient_form|crispy }}
