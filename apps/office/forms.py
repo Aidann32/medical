@@ -1,9 +1,11 @@
-from django.forms import ModelForm, TextInput, DateTimeInput, HiddenInput
+from django.forms import ModelForm, TextInput, DateTimeInput, HiddenInput, ModelChoiceField
 from django.core.exceptions import ValidationError
 
-from .models import Patient, XRay
+from .models import Patient, XRay, XRayRequest
 from .tools import iin_to_datetime
 from .widgets import DatePickerInput
+
+from apps.profiles.models import Profile
 
 
 class PatientModelForm(ModelForm):
@@ -42,3 +44,20 @@ class XRayModelForm(ModelForm):
     class Meta:
         model = XRay
         fields = ('photo',)
+
+
+class XRayRequestForm(ModelForm):
+    class Meta:
+        model = XRayRequest
+        fields = ('doctor', )
+
+    def __init__(self, *args, **kwargs):
+        super(XRayRequestForm, self).__init__(*args, **kwargs)
+        self.fields['doctor'] = ModelChoiceField(queryset=Profile.objects.filter(role=1), label='Доктор')
+
+
+class XRayRequestDetailsForm(ModelForm):
+    class Meta:
+        model = XRayRequest
+        fields = ('diagnosis', 'doctor_comment')
+

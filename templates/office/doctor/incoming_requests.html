@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Список пациентов{% endblock %}
+
+
+{% block content %}
+<div class="m-100 container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'office_menu' %}">Кабинет</a></li>
+          <li class="breadcrumb-item active">Входящие заявки</li>
+        </ol>
+    </nav>
+    <div class="row">
+        {% if requests %}
+            {% for r in requests %}
+            <div class="col-sm-4 mb-5 text-center">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{ r.x_ray.photo.url }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ r.x_ray.patient}}: {{ r.x_ray.result }}<br/>{{ r.doctor }}</h5>
+                        <a href="{% url 'request_details' r.pk %}" class="btn btn-primary">Просмотреть</a>
+                    </div>
+                </div>    
+            </div>
+            {% endfor %}
+        {% else %}
+        <h2>Входящие заявки отсутсвуют</h2>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

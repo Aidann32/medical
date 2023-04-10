@@ -8,10 +8,14 @@ from .forms import CustomAuthenticationForm, NewUserForm
 
 def login(request):
     if request.method == "POST":
-        form = CustomAuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(data=request.POST)
+        print(form.is_valid())
+        print(form.cleaned_data.get('username'))
+        print(form.cleaned_data.get('password'))
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            print(username, password)
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)

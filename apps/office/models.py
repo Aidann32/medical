@@ -3,6 +3,7 @@ from django.db import models
 from apps.profiles.models import Profile
 from .exceptions import ProfileNotDoctorException
 
+
 class Patient(models.Model):
     GENDERS = (
         ('Male', 'Мужской'), 
@@ -32,7 +33,6 @@ class Diagnosis(models.Model):
     title = models.CharField(max_length=255, blank=False, null=False, verbose_name='Название диагноза')
     description = models.TextField(verbose_name='Описание диагноза', null=True, blank=True)
     treatment = models.TextField(verbose_name='Способ лечения', null=True, blank=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Пациент')
 
     def __str__(self):
         return self.title
@@ -60,6 +60,16 @@ class XRay(models.Model):
 
         super(XRay, self).save(*args, **kwargs)
 
+    def is_have_request(self):
+        if XRayRequest.objects.filter(x_ray=self).exists():
+            return True
+        return False
+
+    def get_request(self):
+        if XRayRequest.objects.filter(x_ray=self).exists():
+            return XRayRequest.objects.filter(x_ray=self).first()
+        return None
+
     class Meta:
         verbose_name = 'Снимок пациента'
         verbose_name_plural = 'Снимки пациентов'
@@ -76,12 +86,6 @@ class XRayRequest(models.Model):
 
     def __str__(self):
         return f'{self.x_ray}: {self.doctor}'
-
-    def save(self, *args, **kwargs):
-        if doctor.role != 1:
-            raise ProfileNotDoctorException()
-        
-        super(XRayRequest, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Заявка на рассмотрение доктора'

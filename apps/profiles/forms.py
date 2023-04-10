@@ -11,6 +11,9 @@ class CustomAuthenticationForm(AuthenticationForm):
 		self.fields['username'].label = 'Логин'
 		self.fields['password'].label = 'Пароль'
 
+	class Meta:
+		model = Profile
+		fields = ('username', 'password')
 
 class NewUserForm(UserCreationForm):
 	email = forms.EmailField(required=True)

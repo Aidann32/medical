@@ -2,7 +2,7 @@
 
 {% load crispy_forms_tags %}
 
-{% block title %}Проверка снимка{% endblock %}
+{% block title %}Заявка{% endblock %}
 
 {% block content %}
 <div class="container office-menu mb-5">
@@ -10,7 +10,8 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
           <li class="breadcrumb-item"><a href="{% url 'client_office' %}">Кабинет</a></li>
-          <li class="breadcrumb-item active"><a href="{% url 'xray_history' %}">История заявок доктору</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'incoming_requests' %}">Входящие заявки</a></li>
+          <li class="breadcrumb-item active">Заявка</li>
         </ol>
     </nav>
     {% if messages %}
@@ -32,29 +33,21 @@
     {% endif %}
     <div class="row">
       <div class="col-sm">
-        <h4>{{ xray.patient }}: {{ xray.result }}</h4>
-        <img class="img-fluid" src="{{ xray.photo.url }}" alt="">
-        {% if xray.get_request and request.user.confirmed %}
-            {% if xray.get_request.is_answered %}
-                {% if xray.get_request.diagnosis %}
-                    <h4>Диагноз: {{ xray.get_request.diagnosis }}</h4>
-                {% else %}
-                    <h4>Диагноз не оставлен</h4>
-                {% endif %}
-                {% if xray.get_request.doctor_comment %}
-                    <h4>Комментарий доктора: {{ xray.get_request.doctor_comment }}</h4>
-                {% else %}
-                    <h4>Без комментария</h4>
-                {% endif %}
-            {% else %}
-                <h4>Запрос уже отправлен</h4>
-            {% endif %}
-        {% else %}
+        <h4>{{ xray_request.x_ray.patient }}: {{ xray_request.x_ray.result }}</h4>
+        <img class="img-fluid" src="{{ xray_request.x_ray.photo.url }}" alt="">
+        {% if not xray_request.is_answered %}
             <form method="POST">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-primary">Отправить запрос</button>
+                <button type="submit" class="btn btn-primary">Ответить</button>
             </form>
+        {% else %}
+            {% if xray_request.diagnosis %}
+            <h4>Диагноз: {{ xray_request.diagnosis }}</h4>
+            {% endif %}
+            {% if xray_request.doctor_comment %}
+            <h4>Комментарий: {{ xray_request.doctor_comment }}</h4>
+            {% endif %}
         {% endif %}
       </div>
     </div>

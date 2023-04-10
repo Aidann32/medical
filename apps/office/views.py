@@ -6,8 +6,8 @@ from django.http import Http404
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .forms import PatientModelForm, XRayModelForm
-from .models import Patient, XRay
+from .forms import PatientModelForm, XRayModelForm, XRayRequestForm, XRayRequestDetailsForm
+from .models import Patient, XRay, XRayRequest
 from .decorators import doctor_required, client_required, confirmed_client_required
 
 
@@ -64,7 +64,7 @@ def patients_list(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    return render(request, 'office/patients_list.html', {'page_obj': page_obj})
+    return render(request, 'office/doctor/patients_list.html', {'page_obj': page_obj})
 
 
 @login_required(login_url='/profiles/login/')
@@ -87,6 +87,33 @@ def patient_details(request, iin):
         form = PatientModelForm(instance=patient)
     
     return render(request, 'office/doctor/patient_details.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
+
+
+@login_required(login_url='profiles/login/')
+@doctor_required
+def incoming_requests(request):
+    requests = XRayRequest.objects.filter(doctor=request.user, is_answered=False)
+    return render(request, 'office/doctor/incoming_requests.html', {'requests': requests})
+
+
+@login_required(login_url='profiles/login/')
+@doctor_required
+def request_details(request, pk):
+    if XRayRequest.objects.filter(pk=pk).exists():
+        xray_request = XRayRequest.objects.filter(pk=pk).first()
+        if request.method == 'POST':
+            form = XRayRequestDetailsForm(data=request.POST)
+            x_ray_request = form.save(commit=False)
+            xray_request.is_answered = True
+            xray_request.doctor = request.user
+            xray_request.doctor_comment = x_ray_request.doctor_comment
+            xray_request.diagnosis = x_ray_request.diagnosis
+            xray_request.save()
+            return render(request, 'office/doctor/request_details.html', {'xray_request': xray_request, 'form': form})
+        else:
+            form = XRayRequestDetailsForm()
+
+        return render(request, 'office/doctor/request_details.html', {'xray_request': xray_request, 'form': form})
 
 
 # Client side
@@ -122,7 +149,25 @@ def client_xray(request):
 def xray_result(request, xray_pk):
     if XRay.objects.filter(pk=xray_pk).exists():
         xray = XRay.objects.filter(pk=xray_pk).first()
-        return render(request, 'office/client/xray_result.html', {'xray': xray})
+        if request.method == 'POST':
+            print(request.user.confirmed)
+            if not request.user.confirmed:
+                raise Http404()
+
+            form = XRayRequestForm(request.POST)
+            print(form.is_valid())
+            if form.is_valid():
+                xray_request = form.save(commit=False)
+                xray_request.x_ray = xray
+                xray_request.save()
+                messages.success(request, 'Ваша заявка успешно отправлена доктору!')
+            else:
+                messages.error(request, 'Ошибка отправки заявки')
+
+            return render(request, 'office/client/xray_result.html', {'xray': xray})
+
+        form = XRayRequestForm()
+        return render(request, 'office/client/xray_result.html', {'xray': xray, 'form': form})
     return Http404()
 
 
@@ -161,5 +206,13 @@ def client_edit_data(request):
         form = form = PatientModelForm(instance=patient)
     
     return render(request, 'office/client/edit_data.html', {'form': form,  'birth_date': birth_date, 'patient': patient })
+
+
+@login_required(login_url='profiles/login')
+@client_required
+@confirmed_client_required
+def request_history(request):
+    requests = XRayRequest.objects.filter(x_ray__patient__profile=request.user)
+    return render(request, 'office/client/request_history.html', {'requests': requests})
 
 
