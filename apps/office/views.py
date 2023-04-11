@@ -69,6 +69,13 @@ def patients_list(request):
 
 @login_required(login_url='/profiles/login/')
 @doctor_required
+def doctor_requests_history(request):
+    requests = XRayRequest.objects.filter(doctor=request.user, is_answered=True)
+    return render(request, 'office/doctor/request_history.html', {'requests': requests})
+
+
+@login_required(login_url='/profiles/login/')
+@doctor_required
 def patient_details(request, iin):
     patient = Patient.objects.filter(iin=iin).first()
     birth_date = patient.birth_date.strftime('%d.%m.%Y')
@@ -114,6 +121,7 @@ def request_details(request, pk):
             form = XRayRequestDetailsForm()
 
         return render(request, 'office/doctor/request_details.html', {'xray_request': xray_request, 'form': form})
+    raise Http404()
 
 
 # Client side
@@ -168,19 +176,16 @@ def xray_result(request, xray_pk):
 
         form = XRayRequestForm()
         return render(request, 'office/client/xray_result.html', {'xray': xray, 'form': form})
-    return Http404()
+    raise Http404()
 
 
 @login_required(login_url='profiles/login')
 @client_required
 def xray_history(request):
-    if Patient.objects.filter(profile=request.user).exists():
-        patient = Patient.objects.filter(profile=request.user).first()
-        if XRay.objects.filter(patient=patient).exists():
-            xrays = XRay.objects.filter(patient=patient).order_by('-created_at')
-            return render(request, 'office/client/xray_history.html', {'xrays': xrays }) 
+    patient = Patient.objects.filter(profile=request.user).first()
+    xrays = XRay.objects.filter(patient=patient).order_by('-created_at')
+    return render(request, 'office/client/xray_history.html', {'xrays': xrays }) 
     
-    return Http404()
 
 
 @login_required(login_url='profiles/login')

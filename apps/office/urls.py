@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import office_menu, create_patient, patients_list, patient_details, client_office, client_xray, client_edit_data, xray_result, xray_history, request_history
-from .views import incoming_requests, request_details
+from .views import incoming_requests, request_details, doctor_requests_history
 
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     path('patient/<str:iin>/', patient_details, name='patient_details'),
     path('requests/', incoming_requests, name='incoming_requests'),
     path('request/<int:pk>', request_details, name='request_details'),
+    path('request/history', doctor_requests_history, name='doctor_request_history'),
 
     # Client side
     path('client/', client_office, name='client_office'),
