@@ -155,28 +155,24 @@ def client_xray(request):
 @login_required(login_url='profiles/login')
 @client_required
 def xray_result(request, xray_pk):
-    if XRay.objects.filter(pk=xray_pk).exists():
-        xray = XRay.objects.filter(pk=xray_pk).first()
-        if request.method == 'POST':
-            print(request.user.confirmed)
-            if not request.user.confirmed:
-                raise Http404()
+    xray = XRay.objects.filter(pk=xray_pk).first()
+    if request.method == 'POST':
+        if not request.user.confirmed:
+            raise Http404()
 
-            form = XRayRequestForm(request.POST)
-            print(form.is_valid())
-            if form.is_valid():
-                xray_request = form.save(commit=False)
-                xray_request.x_ray = xray
-                xray_request.save()
-                messages.success(request, 'Ваша заявка успешно отправлена доктору!')
-            else:
-                messages.error(request, 'Ошибка отправки заявки')
+        form = XRayRequestForm(request.POST)
+        if form.is_valid():
+            xray_request = form.save(commit=False)
+            xray_request.x_ray = xray
+            xray_request.save()
+            messages.success(request, 'Ваша заявка успешно отправлена доктору!')
+        else:
+            messages.error(request, 'Ошибка отправки заявки')
 
-            return render(request, 'office/client/xray_result.html', {'xray': xray})
+        return render(request, 'office/client/xray_result.html', {'xray': xray})
 
-        form = XRayRequestForm()
-        return render(request, 'office/client/xray_result.html', {'xray': xray, 'form': form})
-    raise Http404()
+    form = XRayRequestForm()
+    return render(request, 'office/client/xray_result.html', {'xray': xray, 'form': form})
 
 
 @login_required(login_url='profiles/login')
