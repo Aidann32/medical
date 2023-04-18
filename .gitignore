@@ -2,3 +2,8 @@
 db.sqlite3
 **/__pycache__
 *.pyc
+**/__MACOSX
+**/test
+**/train
+**/val
+*.rar

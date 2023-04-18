@@ -1,7 +1,11 @@
+import os
+
 from django.db import models
+from django.conf import settings
 
 from apps.profiles.models import Profile
 from .exceptions import ProfileNotDoctorException
+from apps.xray_backend.backend import predict_pneumonia_result
 
 
 class Patient(models.Model):
@@ -55,8 +59,14 @@ class XRay(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             # If instance is newly created
-            # TODO: Check in ML backend and save to self.result
-            self.result = "Test result"
+
+            # Пока отключил часть с машинным обучением
+            # result = predict_pneumonia_result(os.path.join(settings.MEDIA_ROOT, 'xrays', os.path.basename(self.photo.name)))
+            # if result == 0:
+            #     self.result = "Нормальное"
+            # else:
+            #     self.result = "Пневмония"
+            result = "Нормально"
 
         super(XRay, self).save(*args, **kwargs)
 

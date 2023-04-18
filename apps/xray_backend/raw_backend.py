@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[23]:
+# In[1]:
 
 
 import numpy as np
@@ -14,7 +14,7 @@ from tensorflow.keras import models
 from tensorflow.keras.preprocessing import image
 
 
-# In[3]:
+# In[2]:
 
 
 train_dir='train'
@@ -22,7 +22,7 @@ val_dir='val'
 test_dir='test'
 
 
-# In[4]:
+# In[3]:
 
 
 img_height=128
@@ -30,7 +30,7 @@ img_width=128
 batch_size=32
 
 
-# In[53]:
+# In[4]:
 
 
 train_ds=tf.keras.preprocessing.image_dataset_from_directory(
@@ -39,7 +39,6 @@ train_ds=tf.keras.preprocessing.image_dataset_from_directory(
  image_size=(img_height,img_width),
  batch_size=batch_size
 )
-
 val_ds=tf.keras.preprocessing.image_dataset_from_directory(
  val_dir,
  color_mode='grayscale',
@@ -55,13 +54,13 @@ test_ds=tf.keras.preprocessing.image_dataset_from_directory(
 )
 
 
-# In[54]:
+# In[5]:
 
 
 train_ds.class_names
 
 
-# In[55]:
+# In[6]:
 
 
 plt.figure(figsize=(10, 10))
@@ -73,7 +72,7 @@ for images, labels in train_ds.take(1):
         plt.axis("off")
 
 
-# In[8]:
+# In[7]:
 
 
 AUTOTUNE=tf.data.experimental.AUTOTUNE
@@ -82,7 +81,7 @@ val_ds=train_ds.cache().prefetch(buffer_size=AUTOTUNE)
 test_ds=train_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
 
-# In[9]:
+# In[8]:
 
 
 model = tf.keras.Sequential([
@@ -101,7 +100,7 @@ model = tf.keras.Sequential([
 ])
 
 
-# In[10]:
+# In[9]:
 
 
 model.compile(
@@ -110,13 +109,13 @@ loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
 metrics=['accuracy'])
 
 
-# In[11]:
+# In[10]:
 
 
 epochs=10
 
 
-# In[12]:
+# In[11]:
 
 
 model.fit(
@@ -125,59 +124,45 @@ validation_data=val_ds,
 epochs=epochs)
 
 
-# In[27]:
+# In[93]:
 
 
 model.evaluate(test_ds)
 
 
-# In[79]:
+# In[94]:
 
 
-for images, labels in test_ds.take(1):
-    for i in range(1):
-        y = train_ds.class_names[labels[i]]
-        img = np.squeeze(images[i].numpy().astype("uint8"))
-y
+path  = 'pnevmoniya-4.jpg'
 
 
-# In[80]:
+# In[95]:
 
 
-plt.imshow(img,cmap=plt.cm.gray)
-plt.show()
+from PIL import Image
+img = Image.open(path).convert('L').resize((128, 128), Image.ANTIALIAS)
+img = np.array(img)
+img = img/255
+img
 
 
-# In[81]:
+# In[96]:
 
 
-img.shape
+preds = model.predict(img[None,:,:])
 
 
-# In[82]:
-
-
-x = np.expand_dims(img, axis=0)
-x = tf.keras.applications.xception.preprocess_input(x)
-
-
-# In[83]:
-
-
-preds = model.predict(x)
-
-
-# In[84]:
+# In[97]:
 
 
 preds_prob = np.max(preds)
 preds_ind = np.argmax(preds)
 
 
-# In[85]:
+# In[98]:
 
 
-print("Вероятность ", preds_prob)
+print("Вероятность ",preds_prob)
 if preds_ind==0:
     print('Normal')
 else:

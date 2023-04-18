@@ -136,7 +136,6 @@ def client_office(request):
 def client_xray(request):
     if request.method == 'POST':
         form = XRayModelForm(files=request.FILES)
-        print(form.is_valid())
         if form.is_valid():
             if Patient.objects.filter(profile=request.user).exists():
                 patient = Patient.objects.filter(profile=request.user).first()
